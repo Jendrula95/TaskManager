@@ -1,14 +1,17 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using TaskManager.Models;
+using TaskManager.Repositories;
 namespace TaskManager
 {
     public class Startup
@@ -24,6 +27,10 @@ namespace TaskManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            var connStringConf = Configuration["ConnStr:TaskManagerDatabase"];
+            services.AddDbContext<TaskManagerContext>(options =>
+                  options.UseSqlServer(connStringConf));
+            services.AddTransient<ITaskRepository, TaskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
